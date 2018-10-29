@@ -3,10 +3,21 @@ let keyMap = {}
 document.addEventListener('keydown', e => keyMap[e.key] = true)
 document.addEventListener('keyup', e => keyMap[e.key] = false)
 
-const INITIAL_POSITION = [10, 100]
+const INITIAL_POSITION = [10, 160]
+
+
+const GAME_STATES = {
+  AIMING: 'AIMING',
+  RUNNING: 'RUNNING',
+  PAUSED: 'PAUSED'
+}
+
+let gameState = GAME_STATES.AIMING
 
 let ballPos = [...INITIAL_POSITION]
-let arrow = 0
+let angle = 50
+let velX = 0
+let velY = 0
 
 function inTriangle(x, y){
   const inX = x >= 480 && x <=620
@@ -17,20 +28,35 @@ function inTriangle(x, y){
   return inX && inY
 }
 
-function frame(){
-  ballPos[0] = ballPos[0] + 2
-  updateCanvas()
-  if(inTriangle(...ballPos)){
-    ballPos = [...INITIAL_POSITION]
+function gameFrame(){
+  switch(gameState){
+    case GAME_STATES.AIMING:
+      if(keyMap['ArrowRight'] && angle < 100) {
+        angle ++
+      }else if(keyMap['ArrowLeft'] && angle > 0){
+        angle --
+      }else if(keyMap[' '] && angle > 0){
+        const radians = ((angle/100) * Math.PI) - Math.PI / 2
+        velX = Math.cos(radians) * 2
+        velY = Math.sin(radians) * 2
+        gameState = GAME_STATES.RUNNING
+      }
+      updateCanvas()
+      window.requestAnimationFrame(gameFrame)
+      break
+    case GAME_STATES.RUNNING:
+      ballPos[0] += velX
+      ballPos[1] += velY
+      updateCanvas()
+      if(inTriangle(...ballPos)){
+        ballPos = [...INITIAL_POSITION]
+        gameState = GAME_STATES.PAUSED
+      }
+      window.requestAnimationFrame(gameFrame)
+      break
+    default:
+      alert('END GAME')
   }
-
-  if(keyMap['ArrowRight'] && arrow < 100) {
-    arrow ++
-  }else if(keyMap['ArrowLeft'] && arrow > 0){
-    arrow --
-  }
-
-  window.requestAnimationFrame(frame)
 }
 
-frame()
+gameFrame()

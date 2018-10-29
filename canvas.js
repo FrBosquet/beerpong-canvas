@@ -49,11 +49,11 @@ function paintArrow(){
   topCtx.strokeStyle = 'red'
   topCtx.lineWidth = 5
   topCtx.beginPath()
-  const angle = ((arrow/100) * Math.PI) - Math.PI / 2
+  const radians = ((angle/100) * Math.PI) - Math.PI / 2
   topCtx.moveTo(10, 160)
   topCtx.lineTo(
-    10 + Math.cos(angle) * 50,
-    160 + Math.sin(angle) * 50
+    10 + Math.cos(radians) * 50,
+    160 + Math.sin(radians) * 50
   )
   topCtx.stroke()
 }
