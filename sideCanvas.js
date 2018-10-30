@@ -1,6 +1,8 @@
 function SideCanvas(){
   this.canvas = document.getElementById('side')
   this.context = this.canvas.getContext('2d')
+  this.ballSize = 5
+  this.ballSizeVariance = 2
   
   this.paintBackground = () => {
     this.context.fillStyle = 'green'
@@ -26,24 +28,28 @@ function SideCanvas(){
   }
   
   this.paintBall = () => {
+    const visibleDiameter = this.ballSize - this.ballSizeVariance * (160 - ballPos[0]) / 160
     this.context.lineWidth = 1
     this.context.strokeStyle = 'black'
     this.context.fillStyle = 'white'
     this.context.beginPath()
-    this.context.arc(ballPos[2], ballPos[1], 5, 0, 2 * Math.PI, false)
+    this.context.arc(ballPos[2], ballPos[1], visibleDiameter, 0, 2 * Math.PI, false)
     this.context.stroke()
     this.context.fill()
   }
   
   this.paintArrow = () => {
-    this.context.strokeStyle = 'red'
+    this.context.strokeStyle = `rgb(${ 255 * hAngle / 100}, 0, 0)`
     this.context.lineWidth = 5
     this.context.beginPath()
-    const radians = ((vAngle/100) * Math.PI) - Math.PI / 2
+    const hRadians = ((hAngle/100) * Math.PI) - Math.PI / 2
+    const vRadians = ((vAngle/100) * Math.PI) - Math.PI / 2
+    const visibleLength = Math.cos(hRadians) * 50
+    
     this.context.moveTo(10, 160)
     this.context.lineTo(
-      10 + Math.cos(radians) * 50,
-      160 + Math.sin(radians) * 50
+      10 + Math.cos(vRadians) * visibleLength,
+      160 + Math.sin(vRadians) * visibleLength
     )
     this.context.stroke()
   }

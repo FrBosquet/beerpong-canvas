@@ -43,7 +43,7 @@ function isInTriangle(x, y, z){
 }
 
 function isOutside(x, y, z) {
-  return (z < 0 || z > BOARD_WIDTH) || (x < 0 || x > BOARD_HEIGHT)
+  return (z <= 0 || z >= BOARD_WIDTH) || (x <= 0 || x >= BOARD_HEIGHT)
 }
 
 function isInTable(x, y, z) {
