@@ -58,12 +58,14 @@ function gameFrame(){
         gameState = GAME_STATES.RUNNING
       }
       topCanvas.updateCanvas()
+      sideCanvas.updateCanvas()
       window.requestAnimationFrame(gameFrame)
       break
     case GAME_STATES.RUNNING:
       ballPos[0] += velX
       ballPos[1] += velZ
       topCanvas.updateCanvas()
+      sideCanvas.updateCanvas()
       if(inTriangle(...ballPos)){
         ballPos = [...INITIAL_POSITION]
         gameState = GAME_STATES.PAUSED

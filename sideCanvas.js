@@ -1,29 +1,18 @@
-function TopCanvas(){
-  this.canvas = document.getElementById('top')
+function SideCanvas(){
+  this.canvas = document.getElementById('side')
   this.context = this.canvas.getContext('2d')
   
   this.paintBackground = () => {
     this.context.fillStyle = 'green'
     this.context.fillRect(0,0,680,320)
   }
+  
   this.paintTable = () => {
     this.context.fillStyle = 'white'
     this.context.strokeStyle = 'black'
     this.context.lineWidth = 1
-    this.context.fillRect(100, 60, 540, 200)
-    this.context.strokeRect(100, 60, 540, 200)
-  }
-  
-  this.paintTriangle = () => {
-    this.context.strokeStyle = 'black'
-    this.context.lineWidth = 1
-    this.context.fillStyle = 'azure'
-    this.context.beginPath()
-    this.context.moveTo(480,160)
-    this.context.lineTo(620, 80)
-    this.context.lineTo(620, 240)
-    this.context.closePath()
-    this.context.fill()
+    this.context.fillRect(100, 260, 540, 10)
+    this.context.strokeRect(100, 260, 540, 10)
   }
   
   this.clearCanvas = () => {
@@ -34,7 +23,6 @@ function TopCanvas(){
     this.clearCanvas()
     this.paintBackground()
     this.paintTable()
-    this.paintTriangle()
   }
   
   this.paintBall = () => {
@@ -67,4 +55,4 @@ function TopCanvas(){
   }
 }
 
-const topCanvas = new TopCanvas()
+const sideCanvas = new SideCanvas()
