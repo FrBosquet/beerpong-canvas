@@ -34,14 +34,36 @@ let velZ = 0
 let velX = 0
 let velY = 0
 let msPower = null
+let initialCups = [
+  [109,0,605],
+  [126,0,575],
+  [143,0,605],
+  [143,0,545],
+  [160,0,515],
+  [160,0,575],
+  [177,0,605],
+  [177,0,545],
+  [194,0,575],
+  [211,0,605],
+]
+let cups = [ ...initialCups]
 
 function isInTriangle(x, y, z){
-  const inZ = z >= 480 && z <=620
+  const inZ = z >= 500 && z <=620
+  const inY = y >= 210 && y <=260
   const xOffset = ((z - 480) / 140) * 80
   const upperLimit = 160 + xOffset
   const lowerLimit = 160 - xOffset
   const inX = x <= upperLimit && x >= lowerLimit
-  return inZ && inX
+  return inZ && inX && inY
+}
+
+function isInCup(cup, x, y, z){
+  const [cx, cy, cz] = cup
+  const dx = cx - x
+  const dz = cz - z
+  const dist = Math.sqrt(dx * dx + dz * dz)
+  return dist < 15
 }
 
 function isOutside(x, y, z) {
@@ -68,8 +90,8 @@ function gameFrame(){
       }else if(keyMap['ArrowDown'] && vAngle < 100 ) {
         vAngle ++
       }
-      topCanvas.updateCanvas()
-      sideCanvas.updateCanvas()
+      topCanvas.updateCanvas(cups)
+      sideCanvas.updateCanvas(cups)
       window.requestAnimationFrame(gameFrame)
       break
     case GAME_STATES.POWER:
@@ -90,8 +112,8 @@ function gameFrame(){
         gameState = GAME_STATES.RUNNING
       }
 
-      topCanvas.updateCanvas()
-      sideCanvas.updateCanvas()
+      topCanvas.updateCanvas(cups)
+      sideCanvas.updateCanvas(cups)
       topCanvas.drawForce(totalForce / 5)
       window.requestAnimationFrame(gameFrame)
       break
@@ -103,20 +125,33 @@ function gameFrame(){
 
       if(ballPos[1] > 255 && isInTable(...ballPos)){
         ballPos[1] = 255
-        velY *= -0.95
+        velY *= -0.60
       }
 
-      topCanvas.updateCanvas()
-      sideCanvas.updateCanvas()
+      topCanvas.updateCanvas(cups)
+      sideCanvas.updateCanvas(cups)
       if(isInTriangle(...ballPos)){
-        ballPos = [...INITIAL_POSITION]
-        gameState = GAME_STATES.PAUSED
-        showMessage('IN TRIANGLE')
+        if(ballPos[1] > 215){
+          ballPos = [...INITIAL_POSITION]
+          gameState = GAME_STATES.paused
+          showMessage('FAULT!')
+        }else{
+          const touchedCup = cups.find(cup => isInCup(cup, ...ballPos))
+          
+          if(touchedCup){
+            cups = cups.filter(cup => cup !== touchedCup)
+            ballPos = [...INITIAL_POSITION]
+            gameState = GAME_STATES.PAUSED 
+            showMessage('SCORE!!!')  
+          }else{
+            ballPos[1] = 210
+            velY *= -0.60
+          }
+        }
       }else if(isOutside(...ballPos) || (ballPos[1] > 290)){
         ballPos = [...INITIAL_POSITION]
         gameState = GAME_STATES.paused
         showMessage('OUT!')
-
       }
       window.requestAnimationFrame(gameFrame)
       break
