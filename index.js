@@ -46,6 +46,10 @@ function isOutside(x, y, z) {
   return (z < 0 || z > BOARD_WIDTH) || (x < 0 || x > BOARD_HEIGHT)
 }
 
+function isInTable(x, y, z) {
+  return (z < 640 && z > 100) && (x < 260 && x > 60)  
+}
+
 function gameFrame(){
   switch(gameState){
     case GAME_STATES.AIMING:
@@ -80,7 +84,7 @@ function gameFrame(){
       ballPos[2] += velZ
       velY += GRAVITY
 
-      if(ballPos[1] > 255){
+      if(ballPos[1] > 255 && isInTable(...ballPos)){
         ballPos[1] = 255
         velY *= -0.95
       }
@@ -91,7 +95,7 @@ function gameFrame(){
         ballPos = [...INITIAL_POSITION]
         gameState = GAME_STATES.PAUSED
         showMessage('IN TRIANGLE')
-      }else if(isOutside(...ballPos)){
+      }else if(isOutside(...ballPos) || (ballPos[1] > 290)){
         ballPos = [...INITIAL_POSITION]
         gameState = GAME_STATES.paused
         showMessage('OUT!')
