@@ -42,7 +42,7 @@ function TopCanvas(){
     this.context.strokeStyle = 'black'
     this.context.fillStyle = 'white'
     this.context.beginPath()
-    this.context.arc(ballPos[1], ballPos[0], 5, 0, 2 * Math.PI, false)
+    this.context.arc(ballPos[2], ballPos[0], 5, 0, 2 * Math.PI, false)
     this.context.stroke()
     this.context.fill()
   }
@@ -51,7 +51,7 @@ function TopCanvas(){
     this.context.strokeStyle = 'red'
     this.context.lineWidth = 5
     this.context.beginPath()
-    const radians = ((angle/100) * Math.PI) - Math.PI / 2
+    const radians = ((hAngle/100) * Math.PI) - Math.PI / 2
     this.context.moveTo(10, 160)
     this.context.lineTo(
       10 + Math.cos(radians) * 50,

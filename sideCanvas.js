@@ -30,7 +30,7 @@ function SideCanvas(){
     this.context.strokeStyle = 'black'
     this.context.fillStyle = 'white'
     this.context.beginPath()
-    this.context.arc(ballPos[1], ballPos[0], 5, 0, 2 * Math.PI, false)
+    this.context.arc(ballPos[2], ballPos[1], 5, 0, 2 * Math.PI, false)
     this.context.stroke()
     this.context.fill()
   }
@@ -39,7 +39,7 @@ function SideCanvas(){
     this.context.strokeStyle = 'red'
     this.context.lineWidth = 5
     this.context.beginPath()
-    const radians = ((angle/100) * Math.PI) - Math.PI / 2
+    const radians = ((vAngle/100) * Math.PI) - Math.PI / 2
     this.context.moveTo(10, 160)
     this.context.lineTo(
       10 + Math.cos(radians) * 50,
