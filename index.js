@@ -12,6 +12,7 @@ function showMessage(msg){
 
 const GAME_STATES = {
   AIMING: 'AIMING',
+  POWER: 'POWER',
   RUNNING: 'RUNNING',
   PAUSED: 'PAUSED'
 }
@@ -32,6 +33,7 @@ let vAngle = 50
 let velZ = 0
 let velX = 0
 let velY = 0
+let msPower = null
 
 function isInTriangle(x, y, z){
   const inZ = z >= 480 && z <=620
@@ -58,10 +60,27 @@ function gameFrame(){
       }else if(keyMap['ArrowLeft'] && hAngle > 20){
         hAngle --
       }else if(keyMap[' ']){
+        
+        gameState = GAME_STATES.POWER
+        msPower = Date.now()
+      }else if(keyMap['ArrowUp'] && vAngle > 0 ) {
+        vAngle --
+      }else if(keyMap['ArrowDown'] && vAngle < 100 ) {
+        vAngle ++
+      }
+      topCanvas.updateCanvas()
+      sideCanvas.updateCanvas()
+      window.requestAnimationFrame(gameFrame)
+      break
+    case GAME_STATES.POWER:
+      const delta = Date.now() - msPower
+      const gauge = (delta % 2000) / 1000
+      const totalForce = 5 * (gauge < 1 ? gauge : 2 - gauge)
+
+      if(!keyMap[' ']){
         const hRadians = ((hAngle/100) * Math.PI) - Math.PI / 2
         const vRadians = ((vAngle/100) * Math.PI) - Math.PI / 2
         
-        let totalForce = 2
         let vForce = Math.sin(vRadians) * totalForce
         let hForce = Math.cos(vRadians) * totalForce
 
@@ -69,10 +88,6 @@ function gameFrame(){
         velZ = Math.cos(hRadians) * hForce
         velX = Math.sin(hRadians) * hForce
         gameState = GAME_STATES.RUNNING
-      }else if(keyMap['ArrowUp'] && vAngle > 0 ) {
-        vAngle --
-      }else if(keyMap['ArrowDown'] && vAngle < 100 ) {
-        vAngle ++
       }
       topCanvas.updateCanvas()
       sideCanvas.updateCanvas()
