@@ -66,6 +66,11 @@ function TopCanvas(){
     this.context.stroke()
   }
   
+  this.drawForce = ammount => {
+    this.context.fillStyle = 'red'
+    this.context.fillRect(0, 0, ammount * 680, 3)
+  }
+
   this.updateCanvas = () => {
     this.paintStatics()
     this.paintArrow()

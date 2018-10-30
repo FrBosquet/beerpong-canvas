@@ -89,8 +89,10 @@ function gameFrame(){
         velX = Math.sin(hRadians) * hForce
         gameState = GAME_STATES.RUNNING
       }
+
       topCanvas.updateCanvas()
       sideCanvas.updateCanvas()
+      topCanvas.drawForce(totalForce / 5)
       window.requestAnimationFrame(gameFrame)
       break
     case GAME_STATES.RUNNING:
