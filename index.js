@@ -1,4 +1,14 @@
 let keyMap = {}
+const message = document.getElementById('message')
+
+function hideMessage(){
+  message.style.display = 'none'
+}
+
+function showMessage(msg){
+  message.style.display = 'flex'
+  message.querySelector('h1').innerText = msg
+}
 
 const GAME_STATES = {
   AIMING: 'AIMING',
@@ -40,7 +50,7 @@ function gameFrame(){
         angle ++
       }else if(keyMap['ArrowLeft'] && angle > 0){
         angle --
-      }else if(keyMap[' '] && angle > 0){
+      }else if(keyMap[' '] && angle >= 0){
         const radians = ((angle/100) * Math.PI) - Math.PI / 2
         velX = Math.cos(radians) * 2
         velY = Math.sin(radians) * 2
@@ -56,15 +66,23 @@ function gameFrame(){
       if(inTriangle(...ballPos)){
         ballPos = [...INITIAL_POSITION]
         gameState = GAME_STATES.PAUSED
+        showMessage('IN TRIANGLE')
       }else if(isOutside(...ballPos)){
         ballPos = [...INITIAL_POSITION]
         gameState = GAME_STATES.paused
+        showMessage('OUT!')
+
       }
       window.requestAnimationFrame(gameFrame)
       break
     default:
-      alert('END GAME')
+      setTimeout(() => {
+        hideMessage()
+        gameState = GAME_STATES.AIMING
+        window.requestAnimationFrame(gameFrame)
+      }, 1800)
   }
 }
 
+hideMessage()
 gameFrame()
