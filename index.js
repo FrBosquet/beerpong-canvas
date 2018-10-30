@@ -21,26 +21,26 @@ const BOARD_HEIGHT = 320
 document.addEventListener('keydown', e => keyMap[e.key] = true)
 document.addEventListener('keyup', e => keyMap[e.key] = false)
 
-const INITIAL_POSITION = [10, 160]
+const INITIAL_POSITION = [160, 10]
 
 let gameState = GAME_STATES.AIMING
 
 let ballPos = [...INITIAL_POSITION]
 let angle = 50
+let velZ = 0
 let velX = 0
-let velY = 0
 
-function inTriangle(x, y){
-  const inX = x >= 480 && x <=620
-  const yOffset = ((x - 480) / 140) * 80
-  const upperLimit = 160 + yOffset
-  const lowerLimit = 160 - yOffset
-  const inY = y <= upperLimit && y >= lowerLimit
-  return inX && inY
+function inTriangle(x, z){
+  const inZ = z >= 480 && z <=620
+  const xOffset = ((z - 480) / 140) * 80
+  const upperLimit = 160 + xOffset
+  const lowerLimit = 160 - xOffset
+  const inX = x <= upperLimit && x >= lowerLimit
+  return inZ && inX
 }
 
-function isOutside(x, y) {
-  return (x < 0 || x > BOARD_WIDTH) || (y < 0 || y > BOARD_HEIGHT)
+function isOutside(x, z) {
+  return (z < 0 || z > BOARD_WIDTH) || (x < 0 || x > BOARD_HEIGHT)
 }
 
 function gameFrame(){
@@ -52,8 +52,8 @@ function gameFrame(){
         angle --
       }else if(keyMap[' '] && angle >= 0){
         const radians = ((angle/100) * Math.PI) - Math.PI / 2
-        velX = Math.cos(radians) * 2
-        velY = Math.sin(radians) * 2
+        velZ = Math.cos(radians) * 2
+        velX = Math.sin(radians) * 2
         gameState = GAME_STATES.RUNNING
       }
       updateCanvas()
@@ -61,7 +61,7 @@ function gameFrame(){
       break
     case GAME_STATES.RUNNING:
       ballPos[0] += velX
-      ballPos[1] += velY
+      ballPos[1] += velZ
       updateCanvas()
       if(inTriangle(...ballPos)){
         ballPos = [...INITIAL_POSITION]

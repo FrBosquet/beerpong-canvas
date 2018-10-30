@@ -40,7 +40,7 @@ function paintBall(){
   topCtx.strokeStyle = 'black'
   topCtx.fillStyle = 'white'
   topCtx.beginPath()
-  topCtx.arc(ballPos[0], ballPos[1], 5, 0, 2 * Math.PI, false)
+  topCtx.arc(ballPos[1], ballPos[0], 5, 0, 2 * Math.PI, false)
   topCtx.stroke()
   topCtx.fill()
 }
