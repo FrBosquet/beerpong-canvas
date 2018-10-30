@@ -54,7 +54,7 @@ function isInTriangle(x, y, z){
   const xOffset = ((z - 480) / 140) * 80
   const upperLimit = 160 + xOffset
   const lowerLimit = 160 - xOffset
-  const inX = x <= upperLimit && x >= lowerLimit
+  const inX = x <= upperLimit && x >= lowerLimit && x > 94 && x < 226 
   return inZ && inX && inY
 }
 
