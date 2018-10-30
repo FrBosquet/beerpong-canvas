@@ -15,6 +15,9 @@ function SideCanvas(){
     this.context.lineWidth = 1
     this.context.fillRect(100, 260, 540, 10)
     this.context.strokeRect(100, 260, 540, 10)
+    this.context.fillStyle = 'black'
+    this.context.fillRect(120, 270, 20, 50)
+    this.context.fillRect(600, 270, 20, 50)
   }
   
   this.clearCanvas = () => {
