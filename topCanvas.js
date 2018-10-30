@@ -26,7 +26,6 @@ function TopCanvas(){
     this.context.lineTo(620, 240)
     this.context.closePath()
     this.context.fill()
-    this.context.stroke()
   }
   
   this.paintCups = cups => {

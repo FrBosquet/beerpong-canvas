@@ -5,7 +5,7 @@ function SideCanvas(){
   this.ballSizeVariance = 2
   
   this.paintBackground = () => {
-    this.context.fillStyle = 'green'
+    this.context.fillStyle = 'teal'
     this.context.fillRect(0,0,680,320)
   }
   
@@ -37,12 +37,6 @@ function SideCanvas(){
     this.context.stroke()
     this.context.fill()
 
-    // this.context.lineWidth = 1        
-    // this.context.beginPath()
-    // this.context.fillStyle = 'peru'
-    // this.context.arc(z, x, 8, 0, 2 * Math.PI, false)
-    // this.context.stroke()
-    // this.context.fill()
   }
   
   this.clearCanvas = () => {
