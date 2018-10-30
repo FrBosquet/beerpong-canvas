@@ -1,16 +1,17 @@
 let keyMap = {}
 
-document.addEventListener('keydown', e => keyMap[e.key] = true)
-document.addEventListener('keyup', e => keyMap[e.key] = false)
-
-const INITIAL_POSITION = [10, 160]
-
-
 const GAME_STATES = {
   AIMING: 'AIMING',
   RUNNING: 'RUNNING',
   PAUSED: 'PAUSED'
 }
+const BOARD_WIDTH = 680
+const BOARD_HEIGHT = 320
+
+document.addEventListener('keydown', e => keyMap[e.key] = true)
+document.addEventListener('keyup', e => keyMap[e.key] = false)
+
+const INITIAL_POSITION = [10, 160]
 
 let gameState = GAME_STATES.AIMING
 
@@ -26,6 +27,10 @@ function inTriangle(x, y){
   const lowerLimit = 160 - yOffset
   const inY = y <= upperLimit && y >= lowerLimit
   return inX && inY
+}
+
+function isOutside(x, y) {
+  return (x < 0 || x > BOARD_WIDTH) || (y < 0 || y > BOARD_HEIGHT)
 }
 
 function gameFrame(){
@@ -51,6 +56,9 @@ function gameFrame(){
       if(inTriangle(...ballPos)){
         ballPos = [...INITIAL_POSITION]
         gameState = GAME_STATES.PAUSED
+      }else if(isOutside(...ballPos)){
+        ballPos = [...INITIAL_POSITION]
+        gameState = GAME_STATES.paused
       }
       window.requestAnimationFrame(gameFrame)
       break
