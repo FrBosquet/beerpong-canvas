@@ -29,6 +29,7 @@ let ballPos = [...INITIAL_POSITION]
 let angle = 50
 let velZ = 0
 let velX = 0
+let velY = 0
 
 function inTriangle(x, z){
   const inZ = z >= 480 && z <=620
@@ -56,13 +57,13 @@ function gameFrame(){
         velX = Math.sin(radians) * 2
         gameState = GAME_STATES.RUNNING
       }
-      updateCanvas()
+      topCanvas.updateCanvas()
       window.requestAnimationFrame(gameFrame)
       break
     case GAME_STATES.RUNNING:
       ballPos[0] += velX
       ballPos[1] += velZ
-      updateCanvas()
+      topCanvas.updateCanvas()
       if(inTriangle(...ballPos)){
         ballPos = [...INITIAL_POSITION]
         gameState = GAME_STATES.PAUSED
