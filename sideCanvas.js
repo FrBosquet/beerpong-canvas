@@ -19,6 +19,31 @@ function SideCanvas(){
     this.context.fillRect(120, 270, 20, 50)
     this.context.fillRect(600, 270, 20, 50)
   }
+
+  this.paintCups = cups => {
+    cups.forEach( cup => this.paintCup(cup))
+  }
+
+  this.paintCup = ([x, y, z]) => {
+    this.context.lineWidth = 2
+    this.context.strokeStyle = 'black'
+    this.context.fillStyle = 'tan'
+    this.context.beginPath()
+    this.context.moveTo(z-5, 260)
+    this.context.lineTo(z-15, 210)
+    this.context.lineTo(z+15, 210)
+    this.context.lineTo(z+5, 260)
+    this.context.closePath()
+    this.context.stroke()
+    this.context.fill()
+
+    // this.context.lineWidth = 1        
+    // this.context.beginPath()
+    // this.context.fillStyle = 'peru'
+    // this.context.arc(z, x, 8, 0, 2 * Math.PI, false)
+    // this.context.stroke()
+    // this.context.fill()
+  }
   
   this.clearCanvas = () => {
     this.context.clearRect(0, 0, 680, 320)
@@ -57,8 +82,9 @@ function SideCanvas(){
     this.context.stroke()
   }
   
-  this.updateCanvas = () => {
+  this.updateCanvas = (cups) => {
     this.paintStatics()
+    this.paintCups(cups)
     this.paintArrow()
     this.paintBall()
   }

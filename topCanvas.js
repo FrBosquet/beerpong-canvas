@@ -26,8 +26,30 @@ function TopCanvas(){
     this.context.lineTo(620, 240)
     this.context.closePath()
     this.context.fill()
+    this.context.stroke()
   }
   
+  this.paintCups = cups => {
+    cups.forEach( cup => this.paintCup(cup))
+  }
+
+  this.paintCup = ([x, y, z]) => {
+    this.context.lineWidth = 2
+    this.context.strokeStyle = 'black'
+    this.context.fillStyle = 'tan'
+    this.context.beginPath()
+    this.context.arc(z, x, 15, 0, 2 * Math.PI, false)
+    this.context.stroke()
+    this.context.fill()
+
+    this.context.lineWidth = 1        
+    this.context.beginPath()
+    this.context.fillStyle = 'peru'
+    this.context.arc(z, x, 8, 0, 2 * Math.PI, false)
+    this.context.stroke()
+    this.context.fill()
+  }
+
   this.clearCanvas = () => {
     this.context.clearRect(0, 0, 680, 320)
   }
@@ -71,9 +93,10 @@ function TopCanvas(){
     this.context.fillRect(0, 0, ammount * 680, 3)
   }
 
-  this.updateCanvas = () => {
+  this.updateCanvas = (cups) => {
     this.paintStatics()
     this.paintArrow()
+    this.paintCups(cups)
     this.paintBall()
   }
 }
