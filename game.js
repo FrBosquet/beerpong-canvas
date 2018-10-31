@@ -28,7 +28,7 @@ function Vector(x, y, z){
   }
   this.getHorizontalDistance = vector => {
     const dx = this.x - vector.x
-    const dz = this.z - vextor.z
+    const dz = this.z - vector.z
     return Math.sqrt(dx * dx + dz * dz)
   }
 }
@@ -149,7 +149,7 @@ function Game(config = {
       if(this.ballPos.y > 215){
         this.setGamestate(this.GAME_STATES.PAUSED, 'FAULT!!')
       }else{
-        const touchedCup = this.cups.find(cup => cup.getHorizontalDistance(ballPos) < 15)
+        const touchedCup = this.cups.find(cup => cup.getHorizontalDistance(this.ballPos) < 15)
         if(touchedCup){
           this.cups = cups.filter(cup => cup !== touchedCup)
           this.setGamestate(this.GAME_STATES.PAUSED, 'SCORE!!')
