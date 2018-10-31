@@ -33,19 +33,19 @@ function Vector(x, y, z){
   }
 }
 
-function Game({
-  boardWidth = 680,
-  boardHeight = 320,
-  gravity = 0.02,
-  maxForce = 5,
-  tableHorizontalSeparation = 100,
-  tableLength = 540,
-  tableDeepSeparation = 60,
-  tableWidth = 200,
-  worldLength = 640,
-  worldWidth = 200,
-  cupHeight = 50,
-  tableHeight = 255
+function Game(config = {
+  boardWidth: 680,
+  boardHeight: 320,
+  gravity: 0.02,
+  maxForce: 5,
+  tableHorizontalSeparation: 100,
+  tableLength: 540,
+  tableDeepSeparation: 60,
+  tableWidth: 200,
+  worldLength: 680,
+  worldWidth: 320,
+  cupHeight: 50,
+  tableHeight: 255
 }){
   this.GAME_STATES = {
     AIMING: 'AIMING',
@@ -53,10 +53,10 @@ function Game({
     RUNNING: 'RUNNING',
     PAUSED: 'PAUSED'
   }
-  this.BOARD_WIDTH = boardWidth
-  this.BOARD_HEIGHT = boardWidth
-  this.MAX_FORCE = maxForce
-  this.GRAVITY = gravity
+  this.BOARD_WIDTH = config.boardWidth
+  this.BOARD_HEIGHT = config.boardWidth
+  this.MAX_FORCE = config.maxForce
+  this.GRAVITY = config.gravity
   this.INITIAL_POSITION = new Vector(160, 160, 10)
   this.INITIAL_CUPS = [
     new Vector(109,0,605),
@@ -69,16 +69,16 @@ function Game({
     new Vector(177,0,545),
     new Vector(194,0,575),
     new Vector(211,0,605),]
-  this.TABLE_Z_START = tableHorizontalSeparation
-  this.TABLE_Z_END = tableHorizontalSeparation + tableLength
-  this.TABLE_X_START = tableDeepSeparation
-  this.TABLE_X_END = tableDeepSeparation + tableWidth
-  this.WORLD_Z_END = worldLength
-  this.WORLD_X_END = worldWidth
-  this.CUP_HEIGHT = cupHeight
-  this.TABLE_HEIGHT = tableHeight
-  this.CUP_START = tableHeight - cupHeight
-  this.REBOUND_VECTOR = new Vector(0.8, -0,6, 0.8)
+  this.TABLE_Z_START = config.tableHorizontalSeparation
+  this.TABLE_Z_END = config.tableHorizontalSeparation + config.tableLength
+  this.TABLE_X_START = config.tableDeepSeparation
+  this.TABLE_X_END = config.tableDeepSeparation + config.tableWidth
+  this.WORLD_Z_END = config.worldLength
+  this.WORLD_X_END = config.worldWidth
+  this.CUP_HEIGHT = config.cupHeight
+  this.TABLE_HEIGHT = config.tableHeight
+  this.CUP_START = config.tableHeight - config.cupHeight
+  this.REBOUND_VECTOR = new Vector(1, -0.6, 1)
 
   this.message = null
   this.keySet = {}
@@ -89,6 +89,7 @@ function Game({
   this.speed = new Vector(0, 0, 0)
   this.cups = [ ...this.INITIAL_CUPS]
   this.msPower = null
+  this.force = null
 
   this.update = () => {
     switch(this.gameState){
@@ -99,7 +100,7 @@ function Game({
         this.handlePower()
         break
       case this.GAME_STATES.RUNNING:
-        this.handleAiming()
+        this.handleRunning()
         break
     }
   }
@@ -119,8 +120,9 @@ function Game({
     const delta = Date.now() - this.msPower
     const gauge = (delta % 2000) / 1000
     const totalForce = this.MAX_FORCE * (gauge < 1 ? gauge : 2 - gauge)
+    this.force = totalForce / this.MAX_FORCE 
 
-    if(!keyMap[' ']){
+    if(!this.keySet[' ']){
       const hRadians = ((this.hAngle/100) * Math.PI) - Math.PI / 2
       const vRadians = ((this.vAngle/100) * Math.PI) - Math.PI / 2
       const vForce = Math.sin(vRadians) * totalForce
@@ -131,6 +133,7 @@ function Game({
       const velX = Math.sin(hRadians) * hForce
       this.setSpeed(new Vector(velX, velY, velZ))
       this.setGamestate(this.GAME_STATES.RUNNING)
+      this.force = null
     }
   }
 
@@ -143,14 +146,12 @@ function Game({
     }
 
     if(this.isInTriangle(this.ballPos)){
-      if(ballPos.y > 215){
-        this.resetBallPosition()
+      if(this.ballPos.y > 215){
         this.setGamestate(this.GAME_STATES.PAUSED, 'FAULT!!')
       }else{
         const touchedCup = this.cups.find(cup => cup.getHorizontalDistance(ballPos) < 15)
         if(touchedCup){
           this.cups = cups.filter(cup => cup !== touchedCup)
-          this.resetBallPosition()
           this.setGamestate(this.GAME_STATES.PAUSED, 'SCORE!!')
         }else{
           this.rebound()
@@ -158,22 +159,25 @@ function Game({
         }
       }
     }else if(this.isOutside(this.ballPos) || this.hasFall(this.ballPos)){
-      this.resetBallPosition()
       this.setGamestate(this.GAME_STATES.PAUSED, 'OUT!!')
     }
   }
 
   this.getGameState = () => {
     return {
+      speed: this.speed,
+      state: this.gameState,
       cups: this.cups,
       ballPosition: this.ballPos,
       hAngle: this.hAngle,
-      vAngle: this.vAngle
+      vAngle: this.vAngle,
+      force: this.force,
+      message: this.message
     }
   }
 
   this.isTouchingTable = vector => {
-    return this.isOverTable(vector) && vector.y < this.TABLE_HEIGHT
+    return this.isOverTable(vector) && vector.y > this.TABLE_HEIGHT
   }
 
   this.isOverTable = vector => {
@@ -215,7 +219,9 @@ function Game({
   }
 
   this.resetBallPosition = () => {
+
     this.ballPos = this.INITIAL_POSITION.clone()
+    console.log(this.ballPos)
   }
 
   this.setGamestate = (state, message = null) => {
@@ -237,5 +243,13 @@ function Game({
 
   this.setSpeed = vector => {
     this.speed = vector
+  }
+
+  this.setKey = key => {
+    this.keySet[key] = true
+  }
+
+  this.unsetKey = key => {
+    this.keySet[key] = false
   }
 }
