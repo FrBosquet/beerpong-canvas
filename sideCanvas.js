@@ -20,19 +20,19 @@ function SideCanvas(){
     this.context.fillRect(600, 270, 20, 50)
   }
 
-  this.paintCups = cups => {
+  this.paintCups = ({cups}) => {
     cups.forEach( cup => this.paintCup(cup))
   }
 
-  this.paintCup = ([x, y, z]) => {
+  this.paintCup = cup => {
     this.context.lineWidth = 2
     this.context.strokeStyle = 'black'
     this.context.fillStyle = 'tan'
     this.context.beginPath()
-    this.context.moveTo(z-5, 260)
-    this.context.lineTo(z-15, 210)
-    this.context.lineTo(z+15, 210)
-    this.context.lineTo(z+5, 260)
+    this.context.moveTo(cup.z-5, 260)
+    this.context.lineTo(cup.z-15, 210)
+    this.context.lineTo(cup.z+15, 210)
+    this.context.lineTo(cup.z+5, 260)
     this.context.closePath()
     this.context.stroke()
     this.context.fill()
@@ -49,18 +49,18 @@ function SideCanvas(){
     this.paintTable()
   }
   
-  this.paintBall = () => {
-    const visibleDiameter = this.ballSize - this.ballSizeVariance * (160 - ballPos[0]) / 160
+  this.paintBall = ({ballPosition}) => {
+    const visibleDiameter = this.ballSize - this.ballSizeVariance * (160 - ballPosition.x) / 160
     this.context.lineWidth = 1
     this.context.strokeStyle = 'black'
     this.context.fillStyle = 'white'
     this.context.beginPath()
-    this.context.arc(ballPos[2], ballPos[1], visibleDiameter, 0, 2 * Math.PI, false)
+    this.context.arc(ballPosition.z, ballPosition.y, visibleDiameter, 0, 2 * Math.PI, false)
     this.context.stroke()
     this.context.fill()
   }
   
-  this.paintArrow = () => {
+  this.paintArrow = ({hAngle, vAngle}) => {
     this.context.strokeStyle = `rgb(${ 255 * hAngle / 100}, 0, 0)`
     this.context.lineWidth = 5
     this.context.beginPath()
@@ -76,11 +76,17 @@ function SideCanvas(){
     this.context.stroke()
   }
   
-  this.updateCanvas = (cups) => {
-    this.paintStatics()
-    this.paintCups(cups)
-    this.paintArrow()
-    this.paintBall()
+  this.drawForce = ammount => {
+    this.context.fillStyle = 'red'
+    this.context.fillRect(0, 0, ammount * 680, 3)
+  }
+
+  this.updateCanvas = (state) => {
+    this.paintStatics(state)
+    this.paintCups(state)
+    this.paintArrow(state)
+    this.paintBall(state)
+    state.force && this.drawForce(state.force)
   }
 }
 
